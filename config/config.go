@@ -30,9 +30,10 @@ type Config struct {
 	DisableOutboundUdp443 bool              `json:"disable_outbound_udp443"`
 
 	// Common
-	Listen            string `json:"listen"`
-	CongestionControl string `json:"congestion_control"`
-	LogLevel          string `json:"log_level"`
+	ALPN              []string `json:"alpn"`
+	Listen            string   `json:"listen"`
+	CongestionControl string   `json:"congestion_control"`
+	LogLevel          string   `json:"log_level"`
 }
 
 func ReadConfig(p string) (*Config, error) {

@@ -49,6 +49,7 @@ type Options struct {
 	Users                 map[string]string
 	Certificate           string
 	PrivateKey            string
+	ALPN                  []string
 	CongestionControl     string
 	Fwmark                int
 	SendThrough           string
@@ -113,12 +114,16 @@ func New(opts *Options) (*Server, error) {
 			Str("addr", property.Address).
 			Msg("Dial use given dialer")
 	}
+	alpn := opts.ALPN
+	if len(alpn) == 0 {
+		alpn = append(alpn, "h3")
+	}
 
 	return &Server{
 		logger:                 opts.Logger,
 		relay:                  relay.NewRelay(opts.Logger),
 		dialer:                 &netproxy.ContextDialerConverter{Dialer: d},
-		tlsConfig:              &tls.Config{NextProtos: []string{"h3"}, MinVersion: tls.VersionTLS13, Certificates: []tls.Certificate{cert}},
+		tlsConfig:              &tls.Config{NextProtos: alpn, MinVersion: tls.VersionTLS13, Certificates: []tls.Certificate{cert}},
 		maxOpenIncomingStreams: 100,
 		congestionControl:      opts.CongestionControl,
 		cwnd:                   10,

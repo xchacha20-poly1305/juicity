@@ -77,8 +77,12 @@ func Serve(conf *config.Config) error {
 	if conf.Sni == "" {
 		conf.Sni, _, _ = net.SplitHostPort(conf.Server)
 	}
+	alpn := conf.ALPN
+	if len(alpn) == 0 {
+		alpn = append(alpn, "h3")
+	}
 	tlsConfig := &tls.Config{
-		NextProtos:         []string{"h3"},
+		NextProtos:         alpn,
 		MinVersion:         tls.VersionTLS13,
 		ServerName:         conf.Sni,
 		InsecureSkipVerify: conf.AllowInsecure,
