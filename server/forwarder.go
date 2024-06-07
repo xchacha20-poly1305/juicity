@@ -11,8 +11,8 @@ import (
 	"github.com/juicity/juicity/internal/relay"
 	"github.com/juicity/juicity/pkg/log"
 
-	"github.com/daeuniverse/softwind/netproxy"
-	"github.com/daeuniverse/softwind/pool"
+	"github.com/daeuniverse/outbound/netproxy"
+	"github.com/daeuniverse/outbound/pool"
 	concPool "github.com/sourcegraph/conc/pool"
 )
 
@@ -75,7 +75,7 @@ func NewForwarder(opts ForwarderOptions) (*Forwarder, error) {
 func (s *Forwarder) Serve() (err error) {
 	defer func() {
 		if err != nil {
-			s.Close()
+			_ = s.Close()
 		}
 	}()
 	var network string
@@ -100,7 +100,7 @@ func (s *Forwarder) Serve() (err error) {
 		wg.Go(func(ctx context.Context) (err error) {
 			defer func() {
 				if err != nil {
-					s.Close()
+					_ = s.Close()
 				}
 			}()
 			for {
@@ -150,7 +150,7 @@ func (s *Forwarder) Serve() (err error) {
 		wg.Go(func(ctx context.Context) (err error) {
 			defer func() {
 				if err != nil {
-					s.Close()
+					_ = s.Close()
 				}
 			}()
 			buf := pool.GetFullCap(consts.EthernetMtu)
@@ -217,10 +217,10 @@ func (s *Forwarder) Close() error {
 	default:
 		s.cancel()
 		if l := s.udpListener; l != nil {
-			l.Close()
+			_ = l.Close()
 		}
 		if l := s.tcpListener; l != nil {
-			l.Close()
+			_ = l.Close()
 		}
 	}
 	return nil

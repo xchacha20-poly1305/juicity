@@ -7,8 +7,8 @@ import (
 	"sync"
 	"time"
 
-	"github.com/daeuniverse/softwind/netproxy"
-	"github.com/daeuniverse/softwind/pool"
+	"github.com/daeuniverse/outbound/netproxy"
+	"github.com/daeuniverse/outbound/pool"
 	"github.com/juicity/juicity/common/consts"
 )
 
@@ -89,7 +89,7 @@ func (p *UdpEndpointPool) Remove(lAddr netip.AddrPort, udpEndpoint *UdpEndpoint)
 		if ue != udpEndpoint {
 			return fmt.Errorf("target udp endpoint is not in the pool")
 		}
-		ue.(*UdpEndpoint).Close()
+		_ = ue.(*UdpEndpoint).Close()
 	}
 	return nil
 }
@@ -138,7 +138,7 @@ begin:
 			mu:   sync.Mutex{},
 			deadlineTimer: time.AfterFunc(createOption.NatTimeout, func() {
 				if ue, ok := p.pool.LoadAndDelete(lAddr); ok {
-					ue.(*UdpEndpoint).Close()
+					_ = ue.(*UdpEndpoint).Close()
 				}
 			}),
 			handler:    createOption.Handler,

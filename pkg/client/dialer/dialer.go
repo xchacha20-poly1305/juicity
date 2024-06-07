@@ -3,8 +3,8 @@ package dialer
 import (
 	"runtime"
 
-	"github.com/daeuniverse/softwind/netproxy"
-	"github.com/daeuniverse/softwind/protocol/direct"
+	"github.com/daeuniverse/outbound/netproxy"
+	"github.com/daeuniverse/outbound/protocol/direct"
 	"github.com/juicity/juicity/config"
 )
 
